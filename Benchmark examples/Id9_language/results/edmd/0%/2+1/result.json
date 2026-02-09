@@ -1,0 +1,14 @@
+{
+  "file": "E:\\project\\辨识\\edmd\\ODE_Bench\\id9_language\\0%\\2+1.npy",
+  "system": "id9_language",
+  "noise": "0%",
+  "dt": 2.0,
+  "bias": true,
+  "polyorder_koopman": 10,
+  "polyorder_sysid": 1,
+  "equations": [
+    "dx(1)/dt = -0.0120 +6893.3243*x(1)"
+  ],
+  "out_dir": "edmd_batch_results\\id9_language\\0%\\2+1",
+  "status": "success"
+}

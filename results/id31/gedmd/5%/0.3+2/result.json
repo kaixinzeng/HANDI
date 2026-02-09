@@ -1,0 +1,14 @@
+{
+  "file": "E:\\project\\辨识\\gedmd\\ODE_Bench\\id31_sir\\5%\\0.3+2.npy",
+  "system": "id31_sir",
+  "noise": "5%",
+  "dt": 0.3,
+  "bias": false,
+  "polyorder_sysid": 2,
+  "equations": [
+    "dx(1)/dt = +0.00007·x(1) -0.00025·x(2) +0.00000·x(1)*x(1) -0.00004·x(1)*x(2) -0.00045·x(2)*x(2)",
+    "dx(2)/dt = +0.00070·x(1) -0.04032·x(2) +0.00001·x(1)*x(1) -0.00037·x(1)*x(2) -0.05797·x(2)*x(2)"
+  ],
+  "out_dir": "E:\\project\\辨识\\gedmd\\gedmd_batch_results\\id31_sir\\5%\\0.3+2",
+  "status": "success"
+}

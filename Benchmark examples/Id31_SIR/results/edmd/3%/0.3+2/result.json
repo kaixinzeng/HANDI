@@ -1,0 +1,15 @@
+{
+  "file": "E:\\project\\辨识\\edmd\\ODE_Bench\\id31_sir\\3%\\0.3+2.npy",
+  "system": "id31_sir",
+  "noise": "3%",
+  "dt": 0.3,
+  "bias": false,
+  "polyorder_koopman": 10,
+  "polyorder_sysid": 2,
+  "equations": [
+    "dx(1)/dt = -76.2344*x(1) +269.0386*x(2) -25.1121*x(1)*x(1) +173.1245*x(1)*x(2) -596.3753*x(2)*x(2)",
+    "dx(2)/dt = 0.0517*x(1) -127.8046*x(2) +56.0517*x(1)*x(1) -2578.2209*x(1)*x(2) +248.7701*x(2)*x(2)"
+  ],
+  "out_dir": "edmd_batch_results\\id31_sir\\3%\\0.3+2",
+  "status": "success"
+}

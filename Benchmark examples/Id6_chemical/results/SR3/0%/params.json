@@ -1,0 +1,11 @@
+{
+  "dt": 2.25,
+  "polyorder": 2,
+  "tuned": true,
+  "best_coeff_nrmse": 1402581031832.6174,
+  "best_rollout_mse": 0.5635716381662211,
+  "K": 600,
+  "threshold": 0.0011241530809322972,
+  "nu": 0.0006680404179515739,
+  "max_iter": 300
+}

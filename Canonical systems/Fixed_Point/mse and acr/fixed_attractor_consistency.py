@@ -1,0 +1,273 @@
+from html import parser
+import os
+import re
+import numpy as np
+import pandas as pd
+import argparse
+from scipy.integrate import solve_ivp
+from scipy.integrate import odeint
+from compute_nrmse_names import *
+from tqdm import tqdm
+from pysindy.feature_library import PolynomialLibrary
+from scipy.interpolate import interp1d
+import matplotlib.pyplot as plt
+
+def criterion_enter_and_stay_with_stat(x_traj, x_true, tail_start_idx, delta):
+    x_true_tail = x_true[tail_start_idx:]
+    norms_true = np.linalg.norm(x_true_tail, axis=1) 
+    x_pred_tail = x_traj[tail_start_idx:]
+    norms_pred = np.linalg.norm(x_pred_tail, axis=1)
+
+    norms_true_max = norms_true.max()
+    norms_pred_max = norms_pred.max()
+    rel_error = abs(norms_pred_max - norms_true_max) / norms_true_max
+    is_valid = rel_error < delta
+
+    return is_valid, rel_error
+
+def criterion_trend_consistency_with_stat(x_traj, tail_start_idx, ratio_thresh):
+    x_tail = x_traj[tail_start_idx:]
+    norms = np.linalg.norm(x_tail, axis=1)
+
+    decreasing = norms[1:] <= norms[:-1]
+    ratio = np.mean(decreasing)
+    is_valid = ratio >= ratio_thresh
+
+    return is_valid, ratio
+
+
+def criterion_spiral_rotation_with_stat(x_traj, x_true, t, tail_start_idx, omega_true=3.0, delta_omega=0.3):
+    x_pred_tail = x_traj[tail_start_idx:]
+    x_true_tail = x_true[tail_start_idx:]
+    t_tail = t[tail_start_idx:]
+
+    pred_theta = np.unwrap(np.arctan2(x_pred_tail[:,1], x_pred_tail[:,0]))
+    omega_hat = np.mean(np.diff(pred_theta) / np.diff(t_tail))
+
+    is_valid = abs(omega_hat - omega_true) / omega_true < delta_omega
+    return is_valid, omega_hat
+
+
+def main():
+    args = parse_arguments()
+    
+    SYSTEMS = {
+        "fixed": fixed_point_system,
+        "linear": linear_system,
+        "vdp": vdp,
+        "cyc": limit_cycle_system,
+        "duffing": duffing_system,
+        'm1k16c8': m1k16c8_system,
+        'm1k17c2': m1k17c2_system,
+        'm1k25c20': m1k25c20_system
+    }
+
+    system = args.system
+    true_equation_file = args.true_equation
+    dt = args.dt
+    grid_size = args.grid_size
+    dim = args.dim
+    degree = args.degree
+    t_plot = args.t_plot
+    output_dir = args.output_dir
+    xy_range_min = args.xy_range_min
+    xy_range_max = args.xy_range_max
+    mse_slice_steps = args.mse_slices_steps
+    include_bias = args.include_bias
+    
+    t = np.linspace(0, t_plot , t_plot * 100)           
+    tail_start_idx = int(len(t) * args.tail_ratio)
+
+    x_range = np.linspace(xy_range_min, xy_range_max, grid_size)
+    y_range = np.linspace(xy_range_min, xy_range_max, grid_size)
+    X1, X2 = np.meshgrid(x_range, y_range)
+    initial_conditions = np.vstack([X1.ravel(), X2.ravel()]).T
+
+    num_traj = len(initial_conditions)
+
+    filename_dt = dt 
+    filename_nrmse = [
+        args.path_edmd.format(dt=f"{filename_dt:.2f}"),
+        args.path_sindy.format(dt=f"{filename_dt:.2f}"), 
+        args.path_handi.format(dt=f"{filename_dt:.3f}"),
+        args.path_pse.format(dt=f"{filename_dt:.2f}"),
+        args.path_gedmd.format(dt=f"{filename_dt:.1f}"),
+        # args.path_wsindy.format(dt=f"{filename_dt * 10 :.0f}"),
+        args.path_sr3.format(dt=f"{filename_dt * 10 :.0f}")
+    ]
+
+    filename_mse = list(filename_nrmse)
+
+    # method_names_nrmse = ['EDMD', 'SINDy', 'HANDI','PSE','gEDMD', 'WSINDy', 'SR3']
+    # method_names_mse = ['EDMD', 'SINDy', 'HANDI','PSE','gEDMD', 'WSINDy', 'SR3']
+    method_names_nrmse = ['EDMD','SINDy', 'HANDI', 'PSE', 'gEDMD', 'SR3']
+    method_names_mse = ['EDMD','SINDy', 'HANDI', 'PSE', 'gEDMD', 'SR3']
+    c1_valid = {name: [] for name in method_names_mse}
+    c2_valid = {name: [] for name in method_names_mse}
+    c3_valid = {name: [] for name in method_names_mse}
+    c1_norms_max = {name: [] for name in method_names_mse}
+    c2_ratio = {name: [] for name in method_names_mse}
+    c3_omega = {name: [] for name in method_names_mse}
+    structure_valid_count = {name: 0 for name in method_names_mse}
+    c1_valid_count = {name: 0 for name in method_names_mse}
+    c2_valid_count = {name: 0 for name in method_names_mse}
+    c3_valid_count = {name: 0 for name in method_names_mse}
+
+    library = PolynomialLibrary(degree=degree, include_bias=include_bias)
+    library.fit(np.random.rand(10, dim))
+    names = library.get_feature_names([f"x{i+1}" for i in range(dim)])
+
+    try:
+        true_coeff = build_true_coeff_from_file(true_equation_file, names, dim)
+
+        for idx0, file in enumerate(filename_nrmse):
+            method_name = method_names_nrmse[idx0]
+            
+            if method_name == 'PSE':
+                new_pse_file = file.replace('.txt', f'_new_{dt:.2f}.txt')
+                change_equations(file, new_pse_file)
+                filename_mse[idx0] = new_pse_file
+            if method_name == 'WSINDy':
+                new_wsindy_file = replace_dot_to_mul(file)
+                filename_mse[idx0] = new_wsindy_file
+            if method_name == 'SR3':
+                new_sr3_file = replace_dot_to_mul(file)
+                filename_mse[idx0] = new_sr3_file
+            if method_name == 'gEDMD':
+                new_gedmd_file = replace_dot_to_mul(file)
+                filename_mse[idx0] = new_gedmd_file
+    except Exception as e:
+        print(f"failed: {e}")
+
+    for n, x0 in enumerate(tqdm(initial_conditions)):
+
+        true_solution = odeint(SYSTEMS[args.system], x0, t)
+        for idx, file in enumerate(filename_mse):
+            c1 = False
+            c2 = False
+            c3 = False
+            norms = np.inf
+            ratio = np.inf
+            omega = np.inf
+            method_name = method_names_mse[idx]
+
+            equations_list = parse_and_prepare_equations(file, dim)
+            if not equations_list or len(equations_list) != dim:
+                continue
+            learned_model = create_learned_model(equations_list)
+
+            try:
+                sol = solve_ivp(learned_model,[t[0], t[-1]],x0,t_eval=t,method='RK45',rtol=1e-6,atol=1e-8)
+            except Exception:
+                print(f"Error details: {Exception}")
+                continue
+
+            if sol.success:
+                x_traj = sol.y.T
+                if x_traj.shape[0] == len(t):
+                    c1, norms = criterion_enter_and_stay_with_stat(x_traj, true_solution , tail_start_idx=tail_start_idx, delta=args.delta)
+                    c2, ratio = criterion_trend_consistency_with_stat(x_traj, tail_start_idx=tail_start_idx, ratio_thresh=args.ratio_thresh)
+                    c3, omega = criterion_spiral_rotation_with_stat(x_traj, true_solution, t, tail_start_idx, omega_true=3, delta_omega=args.delta_omega)
+
+            c1_valid[method_name].append(c1)
+            c2_valid[method_name].append(c2)
+            c1_norms_max[method_name].append(norms)
+            c2_ratio[method_name].append(ratio)
+            c3_valid[method_name].append(c3)
+            c3_omega[method_name].append(omega)
+
+            if c1:
+                c1_valid_count[method_name] += 1
+            if c2:
+                c2_valid_count[method_name] += 1
+            if c3:
+                c3_valid_count[method_name] += 1
+            if c1 and c2 and c3:
+                structure_valid_count[method_name] += 1
+
+            # fig, ax = plt.subplots(figsize=(6, 6))
+            # ax.plot(true_solution[:, 0], true_solution[:, 1], color="#403E3E", linewidth=2, label='True')
+            # ax.plot(x_traj[:, 0], x_traj[:, 1], color="#D62728", linewidth=2, label='Predicted')
+            # ax.set_title(f'{method_name} - Inconsistent Attractor (IC {n})')
+            # ax.legend()
+            # filepath = os.path.join(output_dir, f"{method_name}")
+            # os.makedirs(filepath, exist_ok=True)
+            # plt.savefig(os.path.join(filepath, f'cyc_{n}.png'))
+            # plt.close()
+
+    os.makedirs(output_dir, exist_ok=True)
+    
+
+    df_structure_valid_count = pd.DataFrame({
+        'Method': method_names_mse,
+        'C1_Count':[c1_valid_count[name] for name in method_names_mse],
+        'C1_Percentage':[c1_valid_count[name]/num_traj for name in method_names_mse],
+        'C2_Count':[c2_valid_count[name] for name in method_names_mse],
+        'C2_Percentage':[c2_valid_count[name]/num_traj for name in method_names_mse],
+        'C3_Count':[c3_valid_count[name] for name in method_names_mse],
+        'C3_Percentage':[c3_valid_count[name]/num_traj for name in method_names_mse],
+        'ACR_Count': [structure_valid_count[name] for name in method_names_mse],
+        'ACR_Percentage': [structure_valid_count[name]/num_traj for name in method_names_mse]
+    }) 
+    structure_csv_path = f"{output_dir}/{system}_acr_dt{dt}.csv"
+    df_structure_valid_count.to_csv(structure_csv_path, index=False, float_format="%.8f")
+
+    df_c1_valid = pd.DataFrame({name: c1_valid[name] for name in method_names_mse})
+    c1_valid_csv_path = f"{output_dir}/{system}_c1_valid_dt{dt}.csv"
+    df_c1_valid.to_csv(c1_valid_csv_path, index=False, float_format="%.8f")
+
+    df_c2_valid = pd.DataFrame({name: c2_valid[name] for name in method_names_mse})
+    c2_valid_csv_path = f"{output_dir}/{system}_c2_valid_dt{dt}.csv"
+    df_c2_valid.to_csv(c2_valid_csv_path, index=False, float_format="%.8f")
+
+    df_c3_valid = pd.DataFrame({name: c3_valid[name] for name in method_names_mse})
+    c3_valid_csv_path = f"{output_dir}/{system}_c3_valid_dt{dt}.csv"
+    df_c3_valid.to_csv(c3_valid_csv_path, index=False, float_format="%.8f")
+
+    df_c1_norms = pd.DataFrame({name: c1_norms_max[name] for name in method_names_mse})
+    c1_norms_csv_path = f"{output_dir}/{system}_c1_norms_dt{dt}.csv"
+    df_c1_norms.to_csv(c1_norms_csv_path, index=False, float_format="%.8f")
+
+    df_c2_ratio = pd.DataFrame({name: c2_ratio[name] for name in method_names_mse})
+    c2_ratio_csv_path = f"{output_dir}/{system}_c2_ratio_dt{dt}.csv"
+    df_c2_ratio.to_csv(c2_ratio_csv_path, index=False, float_format="%.8f")
+
+    df_c3_omega = pd.DataFrame({name: c3_omega[name] for name in method_names_mse})
+    c3_omega_csv_path = f"{output_dir}/{system}_c3_omega_dt{dt}.csv"
+    df_c3_omega.to_csv(c3_omega_csv_path, index=False, float_format="%.8f")
+
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    
+    parser.add_argument('--system', type=str, default='fixed',choices=['fixed', 'linear', 'vdp','cyc','duffing','m1k16c8'],help='Select system dynamics for ground truth simulation.')
+    parser.add_argument("--true_equation", type=str, default="fixed_point/results/true_equation.txt",help="path to true system equation file")
+    parser.add_argument("--path_edmd", type=str, default="fixed_point/results/EDMD/EDMD_equation_poly_10_polysysid_7_dt_{dt}.txt")
+    parser.add_argument("--path_sindy", type=str,default="fixed_point/results/sindy/best_equation_for_threshod/SINDY_equation_poly_7_dt_{dt}_threshod0.1.txt")
+    parser.add_argument("--path_handi", type=str,default="fixed_point/results/HANDI/edmd_runs_0.9_poly7/best_equations_dt{dt}.txt")
+    parser.add_argument("--path_pse", type=str,default="fixed_point/results/PSE/PSE_equation_poly_7_dt_{dt}.txt")
+    parser.add_argument("--path_gedmd", type=str,default="fixed_point/results/gedmd/gedmd_dt{dt}/best_equations.txt")
+    parser.add_argument("--path_wsindy", type=str,default="fixed_point/results/wsindy/fix{dt}/tune_best_equations.txt")
+    parser.add_argument("--path_sr3", type=str,default="fixed_point/results/sr3/fix{dt}/tune_best_equations.txt")
+
+    parser.add_argument('--dt', type=float, default=0.9, help='Time step for downsampling/evaluation (dt).')
+    parser.add_argument('--t_plot', type=int, default=20, help='Time factor for total integration time (T_max = t_plot * scale).')
+    parser.add_argument('--tail_ratio', type=float, default=0.9)
+    parser.add_argument('--delta', type=float, default=0.1)
+    parser.add_argument('--ratio_thresh', type=float, default=0.90, help='Minimum required ratio of decreasing state norms.')
+    parser.add_argument('--delta_omega', type=float, default=0.3)
+
+    parser.add_argument('--grid_size', type=int, default=10, help='Number of points in each dimension for initial condition grid (grid_size x grid_size).')
+    parser.add_argument('--xy_range_min', type=float, default=-1.0, help='Minimum value for initial condition range.')
+    parser.add_argument('--xy_range_max', type=float, default=1.0, help='Maximum value for initial condition range.')
+    
+    parser.add_argument('--degree', type=int, default=7, help='Polynomial degree for feature library.')
+    parser.add_argument('--dim', type=int, default=2, help='Dimension of the system (dim).')
+    parser.add_argument('--include_bias', type=bool, default=False, help='Whether to include bias in the feature library.')
+
+    parser.add_argument('--output_dir', type=str, default='Attractor_consistency/fixed_point/fixed0.9', help='Base directory for saving output CSV files.')
+    parser.add_argument('--mse_slices_steps', nargs='*', default=[5, 10, 20, None], help="Steps for MSE slicing")
+    
+    return parser.parse_args()
+
+if __name__ == '__main__':
+    main()

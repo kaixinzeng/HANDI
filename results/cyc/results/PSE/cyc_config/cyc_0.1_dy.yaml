@@ -1,0 +1,20 @@
+experiment: cyc
+csv_path: /root/PSE/data_cyc/cyc_0.1_dy.csv
+time_cost_seconds: 3607.5115265846252
+success: false
+best_expression:
+  string_form: -x1**3 + x1 - (x0*x1 + 3)**2 + (x0*x1 + 3)*(x0*x1 - x0 + 3)
+  reward: 0.8257880685469979
+  loss: 0.001722258166410029
+  complexity: 15
+hyperparameters:
+  n_inputs: 5
+  use_constant: false
+  operators:
+  - Add
+  - Mul
+  - Sub
+  - Identity
+  n_down_sample: 3000
+  topk: 10
+  seed: 0

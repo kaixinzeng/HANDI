@@ -1,0 +1,7 @@
+{
+  "polyorder": 3,
+  "dt": 0.02,
+  "threshold": 0.01,
+  "nu": 0.014286492169284197,
+  "include_bias": false
+}

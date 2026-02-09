@@ -1,0 +1,8 @@
+Method,Avg_Amp_Error (Success Only),Avg_Pred_Amp,Avg_True_Amp,Amp_Err%,Success_Count
+HANDI,0.016,1.647,1.642,0.30,4/4
+SINDy,0.073,1.572,1.642,4.26,2/4
+SR3,N/A,N/A,N/A,N/A,0/4
+PSE,0.197,1.443,1.642,12.12,3/4
+WSINDy,0.016,1.645,1.642,0.18,1/4
+gEDMD,N/A,N/A,N/A,N/A,0/4
+EDMD,N/A,N/A,N/A,N/A,0/4

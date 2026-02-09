@@ -1,0 +1,4 @@
+Method,ACR_Count,Total_Trajectories,ACR_Percentage
+HANDI,100,100,1.0000
+ablationA,90,100,0.9000
+ortho,0,100,0.0000

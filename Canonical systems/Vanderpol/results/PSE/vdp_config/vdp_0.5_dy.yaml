@@ -1,0 +1,21 @@
+experiment: vdp
+csv_path: /root/PSE/data_vdp/vdp_0.5_dy.csv
+time_cost_seconds: 3606.888925552368
+success: false
+best_expression:
+  string_form: x0**4*(-x0**4 + (x0 + x1)**5) + x0*(-x0**4 + (x0 + x1)**5) - (-x0**4
+    + (x0 + x1)**5)*(x0**4 + x0)
+  reward: 0.2501894612656406
+  loss: 4.066639423370361
+  complexity: 28
+hyperparameters:
+  n_inputs: 5
+  use_constant: false
+  operators:
+  - Add
+  - Mul
+  - Sub
+  - Identity
+  n_down_sample: 3000
+  topk: 10
+  seed: 0

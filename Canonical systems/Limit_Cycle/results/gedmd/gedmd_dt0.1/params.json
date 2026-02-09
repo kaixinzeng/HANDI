@@ -1,0 +1,8 @@
+{
+  "dt": 0.1,
+  "polyorder": 10,
+  "polyorder_for_sysid": 5,
+  "tuned": false,
+  "best_coeff_nrmse": 0.15868006194883644,
+  "best_rollout_mse": null
+}

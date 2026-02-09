@@ -1,0 +1,12 @@
+{
+  "file": "E:\\project\\辨识\\sindy\\ODE_Bench\\id9_language\\3%\\2+1.npy",
+  "system": "id9_language",
+  "noise": "3%",
+  "raw_dt": 2.0,
+  "stride": 1,
+  "degree": 1,
+  "include_bias": true,
+  "best_threshold": 0.01,
+  "best_mse": 0.0008198162662372873,
+  "out_dir": "E:\\project\\辨识\\sindy\\sindy_batch_results\\id9_language\\3%\\2+1"
+}

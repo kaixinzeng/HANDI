@@ -1,0 +1,12 @@
+{
+  "file": "E:\\project\\辨识\\sindy\\ODE_Bench\\id39_glycolysis\\5%\\0.3+3.npy",
+  "system": "id39_glycolysis",
+  "noise": "5%",
+  "raw_dt": 0.3,
+  "stride": 1,
+  "degree": 3,
+  "include_bias": true,
+  "best_threshold": 0.01,
+  "best_mse": 0.0069857564677339706,
+  "out_dir": "E:\\project\\辨识\\sindy\\sindy_batch_results\\id39_glycolysis\\5%\\0.3+3"
+}

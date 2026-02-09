@@ -1,0 +1,14 @@
+{
+  "file": "E:\\project\\辨识\\edmd\\ODE_Bench\\id6_chemical\\2%\\2.25+2.npy",
+  "system": "id6_chemical",
+  "noise": "2%",
+  "dt": 2.25,
+  "bias": false,
+  "polyorder_koopman": 10,
+  "polyorder_sysid": 2,
+  "equations": [
+    "dx(1)/dt = -288.2955*x(1) -2132.1072*x(1)*x(1)"
+  ],
+  "out_dir": "edmd_batch_results\\id6_chemical\\2%\\2.25+2",
+  "status": "success"
+}

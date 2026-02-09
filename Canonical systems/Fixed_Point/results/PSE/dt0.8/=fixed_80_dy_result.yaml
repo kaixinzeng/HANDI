@@ -1,0 +1,20 @@
+experiment: fixed_pse
+csv_path: data/fixed/fixed_point_80_dy.csv
+time_cost_seconds: 3602.4021079540253
+success: false
+best_expression:
+  string_form: x0**4*x1**2*(x0**2*x1 + 3*x1**3) - 3*x0**2*x1 + x0 - 3*x1**3
+  reward: 0.6655675981085977
+  loss: 0.03701283410191536
+  complexity: 23
+hyperparameters:
+  n_inputs: 5
+  use_constant: false
+  operators:
+  - Add
+  - Mul
+  - Sub
+  - Identity
+  n_down_sample: 3000
+  topk: 10
+  seed: 0

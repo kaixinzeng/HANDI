@@ -1,0 +1,12 @@
+{
+  "file": "E:\\project\\辨识\\sindy\\ODE_Bench\\id31_sir\\3%\\0.3+2.npy",
+  "system": "id31_sir",
+  "noise": "3%",
+  "raw_dt": 0.3,
+  "stride": 1,
+  "degree": 2,
+  "include_bias": false,
+  "best_threshold": 0.01,
+  "best_mse": 0.009660119528910632,
+  "out_dir": "E:\\project\\辨识\\sindy\\sindy_batch_results\\id31_sir\\3%\\0.3+2"
+}

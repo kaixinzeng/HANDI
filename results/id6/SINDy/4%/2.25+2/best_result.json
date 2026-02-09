@@ -1,0 +1,12 @@
+{
+  "file": "E:\\project\\辨识\\sindy\\ODE_Bench\\id6_chemical\\4%\\2.25+2.npy",
+  "system": "id6_chemical",
+  "noise": "4%",
+  "raw_dt": 2.25,
+  "stride": 1,
+  "degree": 2,
+  "include_bias": false,
+  "best_threshold": 0.01,
+  "best_mse": 0.18317800004044865,
+  "out_dir": "E:\\project\\辨识\\sindy\\sindy_batch_results\\id6_chemical\\4%\\2.25+2"
+}

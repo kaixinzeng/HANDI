@@ -1,0 +1,13 @@
+{
+  "file": "E:\\project\\辨识\\gedmd\\ODE_Bench\\id9_language\\0%\\2+1.npy",
+  "system": "id9_language",
+  "noise": "0%",
+  "dt": 2.0,
+  "bias": true,
+  "polyorder_sysid": 1,
+  "equations": [
+    "dx(1)/dt = -20935.79346·1 +353379.20733·x(1)"
+  ],
+  "out_dir": "E:\\project\\辨识\\gedmd\\gedmd_batch_results\\id9_language\\0%\\2+1",
+  "status": "success"
+}

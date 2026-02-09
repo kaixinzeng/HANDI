@@ -1,0 +1,21 @@
+experiment: ni_pse
+csv_path: ./data/NI/NWB_traj2_states=3_t=1.6_zscore_num20_dx.csv
+time_cost_seconds: 10800.058757305145
+success: false
+best_expression:
+  string_form: x0**2 - x1**2 + 3*x2 + (2*x0**3*(x0*x2 - 5*x2) - x0)*(x0**2 + x0 +
+    x1 - x1**3/x0**3) - x1**3/x0**3
+  reward: 0.10840236396349275
+  loss: 30.131628036499023
+  complexity: 35
+hyperparameters:
+  n_inputs: 5
+  use_constant: false
+  operators:
+  - Add
+  - Mul
+  - Sub
+  - Identity
+  n_down_sample: 120
+  topk: 10
+  seed: 0

@@ -1,0 +1,8 @@
+{
+  "K": 700,
+  "threshold": 0.1,
+  "nu": 0.647108569879262,
+  "max_iter": 300,
+  "rollout_mse": 1000000094611.9237,
+  "coeff_nrmse": null
+}

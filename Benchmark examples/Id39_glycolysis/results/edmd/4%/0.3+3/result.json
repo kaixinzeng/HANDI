@@ -1,0 +1,15 @@
+{
+  "file": "E:\\project\\辨识\\edmd\\ODE_Bench\\id39_glycolysis\\4%\\0.3+3.npy",
+  "system": "id39_glycolysis",
+  "noise": "4%",
+  "dt": 0.3,
+  "bias": true,
+  "polyorder_koopman": 10,
+  "polyorder_sysid": 3,
+  "equations": [
+    "dx(1)/dt = 1.5737*x(1) -0.8353*x(2) +0.3444*x(1)*x(1) -0.0379*x(1)*x(2) +0.0317*x(2)*x(2) +0.0312*x(1)*x(1)*x(1) -0.0037*x(1)*x(1)*x(2) -0.0058*x(1)*x(2)*x(2) -0.0090*x(2)*x(2)*x(2)",
+    "dx(2)/dt = 9.7434*x(1) -5.3925*x(2) +0.7915*x(1)*x(1) +0.2743*x(1)*x(2) +0.2425*x(2)*x(2) +0.0632*x(1)*x(1)*x(1) +0.0247*x(1)*x(1)*x(2) +0.0160*x(1)*x(2)*x(2) +0.0201*x(2)*x(2)*x(2)"
+  ],
+  "out_dir": "edmd_batch_results\\id39_glycolysis\\4%\\0.3+3",
+  "status": "success"
+}
