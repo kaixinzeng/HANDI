@@ -77,7 +77,7 @@ This can be done either via command-line arguments:
 python HANDI.py --data <PATH_TO_DATA> --dt <SAMPLING_INTERVAL>
 ```
 
-or by modifying the configuration section in HANDI.py.
+or by modifying the configuration section in `HANDI.py`.
 
 ## License
 This project is released under the **MIT License**.
