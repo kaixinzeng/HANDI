@@ -6,7 +6,11 @@ This repository provides the reference implementation for the paper **“Flow-co
 
 The complete demonstration video is available at: https://github.com/kaixinzeng/HANDI/releases/download/v1.0-supp-video/2026-02-26_164548_006.mp4
 
-https://github.com/user-attachments/assets/2c686902-fa97-4aa7-8e0e-9723e2cf61ac
+
+
+https://github.com/user-attachments/assets/c14a2bbe-9c53-4ecf-98cd-cb92b056a109
+
+
 
 ## System requirements
 The demo and experiments were tested on the following system:
