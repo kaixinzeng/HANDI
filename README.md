@@ -1,8 +1,8 @@
 # HANDI: Flow-consistent Identification under Sparse Sampling
 
-This repository provides the reference implementation for the paper:
+## Overview
 
-**Flow-consistent identification of governing equations from sparsely sampled measurements**  
+This repository provides the reference implementation for the paper **“Flow-consistent identification of governing equations from sparsely sampled measurements.”** It implements HANDI, a flow-consistent framework for identifying continuous-time governing equations from sparsely sampled time-series data. The method avoids numerical differentiation or integration by learning system flow maps in a hybrid observable space that combines analytic basis functions with neural residual observables, enabling both robustness and interpretability. Using a Koopman-based formulation, HANDI recovers physically consistent dynamics even under severe temporal sparsity and limited data, and is validated on canonical nonlinear systems and real-world datasets. A demonstration video illustrating the workflow and representative results is provided.
 
 ## System requirements
 The demo and experiments were tested on the following system:
