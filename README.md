@@ -37,20 +37,47 @@ pip install -r requirements.txt
 ```
 
 ## Demo
-Detailed descriptions of the code structure, benchmark systems, and experimental settings 
-are provided in **`README.pdf`**.
+
+We provide several example datasets in the repository (canonical systems, benchmark examples, and real-world systems).
+Each example folder is self-contained.
+
+To run a demo using the provided data:
+
+```bash
+# Example: canonical Duffing system
+cd Canonical systems/Duffing
+python HANDI.py \
+  --data ./data/duff_train40.npy \
+  --dt 0.4 \
+  --device 1
+```
+
+After execution, the demo **outputs** include trained model weights (.pt), a record of optimal hyperparameters (.json), and the identified symbolic governing equations (.txt). Additional files store identified coefficients, error metrics, and diagnostic indicators for quantitative evaluation and verification.
+
+A representative demo illustrating the HANDI workflow is provided via Code Ocean. The Code Ocean capsule includes the necessary environment, data, and execution scripts to run the demo without additional setup. Users can execute the demo directly within the Code Ocean environment and inspect the resulting identified dynamics and visualizations. The expected runtime for the demo is approximately **3 minutes** on a standard GPU-enabled desktop environment.
+
+Code Ocean demo capsule:  
+https://codeocean.com/capsule/9813712/tree
 
 ## Instructions for use
 Detailed descriptions of the code structure, benchmark systems, and experimental settings 
-are provided in **`README.pdf`**.
+are provided in **`read_me.pdf`**.
 
-## Repository overview
-- `HANDI.py`, `EDMD.py`, `SINDy.py`, 'gEDMD.py','SR3.py','WSINDy.py','PSE.py': implementations of HANDI and baseline methods  
-- Canonical systems, benchmark examples, and real-world examples are organized by folders  
-- Scripts for comparison, ablation studies, and plotting are included
+To apply HANDI to custom datasets, prepare time-series data in the same format as the provided examples
+(e.g., state variables sampled at uniform time intervals).
 
-## Reproducibility
-- Full-scale experiments may require GPU resources and are intended for offline execution.
+Users need to specify:
+- Path to the input data
+- Sampling interval `dt`
+- (Optional) training-related hyperparameters
+
+This can be done either via command-line arguments:
+
+```bash
+python HANDI.py --data <PATH_TO_DATA> --dt <SAMPLING_INTERVAL>
+```
+
+or by modifying the configuration section in HANDI.py.
 
 ## License
 This project is released under the **MIT License**.
