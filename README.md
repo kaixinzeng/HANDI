@@ -15,7 +15,7 @@ https://github.com/user-attachments/assets/c14a2bbe-9c53-4ecf-98cd-cb92b056a109
 ## System requirements
 The demo and experiments were tested on the following system:
 - **Operating system**: Ubuntu 24.04
-- **Python**: 3.9  
+- **Python**: 3.13  
 - **GPU**: NVIDIA RTX 4090
 - **NVIDIA driver**: version compatible with CUDA 13.0  
 
