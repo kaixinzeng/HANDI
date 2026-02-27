@@ -1,0 +1,65 @@
+﻿[INFO] Loaded ground-truth data: D:\flag_last\Inverted_FlagV2\data\4d_dt0.2.npy  shape=(4, 76, 4)
+[INFO] Training dt=0.2,  original_dt=0.03333333
+
+[INFO] Processing method: EDMD
+       Equation file: D:\flag_last\Inverted_FlagV2\result\EDMD_InvertedFlag_dt0.2.txt
+    [WARN] Shape mismatch traj 0: pred=1 vs truth=76
+    [WARN] Shape mismatch traj 1: pred=1 vs truth=76
+    [WARN] Shape mismatch traj 2: pred=4 vs truth=76
+    [WARN] Shape mismatch traj 3: pred=1 vs truth=76
+       Per-trajectory MSE: [inf inf inf inf]
+       AUSC = 0.000000
+
+[INFO] Processing method: gEDMD
+       Equation file: D:\flag_last\Inverted_FlagV2\result\gEDMD_InvertedFlag_dt0.2.txt
+    [WARN] Shape mismatch traj 0: pred=1 vs truth=76
+    [WARN] Shape mismatch traj 1: pred=1 vs truth=76
+    [WARN] Shape mismatch traj 2: pred=9 vs truth=76
+    [WARN] Shape mismatch traj 3: pred=1 vs truth=76
+       Per-trajectory MSE: [inf inf inf inf]
+       AUSC = 0.000000
+
+[INFO] Processing method: WSINDy
+       Equation file: D:\flag_last\Inverted_FlagV2\result\WSINDy_InvertedFlag_dt0.2.txt
+    [WARN] Shape mismatch traj 0: pred=19 vs truth=76
+    [WARN] Shape mismatch traj 1: pred=33 vs truth=76
+    [WARN] Shape mismatch traj 2: pred=22 vs truth=76
+    [WARN] Shape mismatch traj 3: pred=7 vs truth=76
+       Per-trajectory MSE: [inf inf inf inf]
+       AUSC = 0.000000
+
+[INFO] Processing method: PSE
+       Equation file: D:\flag_last\Inverted_FlagV2\result\PSE_InvertedFlag_dt0.2.txt
+       Per-trajectory MSE: [7.43294298e-01 2.68644874e+32 4.18672298e+09 1.65795203e+00]
+       AUSC = 0.064176
+
+[INFO] Processing method: SR3
+       Equation file: D:\flag_last\Inverted_FlagV2\result\SR3_InvertedFlag_dt0.2.txt
+       Per-trajectory MSE: [0.45538756 0.42777316 0.42828897 0.4288852 ]
+       AUSC = 0.564916
+
+[INFO] Processing method: SINDy
+       Equation file: D:\flag_last\Inverted_FlagV2\result\SINDy_InvertedFlag_dt0.2.txt
+    [WARN] Shape mismatch traj 0: pred=36 vs truth=76
+    [WARN] Shape mismatch traj 1: pred=48 vs truth=76
+    [WARN] Shape mismatch traj 2: pred=50 vs truth=76
+       Per-trajectory MSE: [       inf        inf        inf 1.26415684]
+       AUSC = 0.000000
+
+[INFO] Processing method: HANDI
+       Equation file: D:\flag_last\Inverted_FlagV2\result\HANDI_InvertedFlag_dt0.2.txt
+       Per-trajectory MSE: [0.00267297 0.00243414 0.0009854  0.01796   ]
+       AUSC = 0.993987
+
+==================================================
+AUSC Summary  (delta_max = 1.0)
+==================================================
+      EDMD : 0.000000
+     gEDMD : 0.000000
+    WSINDy : 0.000000
+       PSE : 0.064176
+       SR3 : 0.564916
+     SINDy : 0.000000
+     HANDI : 0.993987
+==================================================
+  -> Saved AUSC chart to: D:\flag_last\Inverted_FlagV2\result\figure2_InvertedFlag_AUSC.pdf

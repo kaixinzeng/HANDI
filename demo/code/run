@@ -1,0 +1,182 @@
+#!/bin/bash
+
+# Stop execution immediately if a command fails
+# Comment out the line below if you want the script to continue even if one step fails
+set -e
+
+echo "=========================================="
+echo "Starting Python execution sequence..."
+echo "=========================================="
+
+# ------------------------------------------------
+# Step 1: cyc_HANDI.py
+# Description: Runs in a loop, passing dt parameter from 0.1 to 1.0
+# ------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+cd "$SCRIPT_DIR" || exit 1
+
+echo ""
+echo "[Step 1] Executing: cyc_HANDI_cpu.py (Looping dt=0.1 to 1.0)"
+for i in {1..10}; do
+    # Format the dt value: 0.1, 0.2, ..., 0.9, 1.0
+    if [ $i -eq 10 ]; then
+        dt_val="1.0"
+    else
+        dt_val="0.$i"
+    fi
+    
+    echo "  -> Running with dt=$dt_val"
+    python3.9 cyc_HANDI_cpu.py --dt $dt_val
+    # python cyc_SR3.py --dt $dt_val
+    # python cyc_WSINDy.py --dt $dt_val
+
+done
+echo "[Step 1] cyc_HANDI_cpu.py completed."
+
+# ------------------------------------------------
+# Step 2: cyc_SINDy.py
+# ------------------------------------------------
+# echo ""
+# echo "[Step 2] Executing: cyc_SINDy.py"
+# python cyc_SINDy.py
+# echo "[Step 2] Completed."
+
+# ------------------------------------------------
+# Step 3: cyc_SR3.py
+# ------------------------------------------------
+# echo ""
+# echo "[Step 3] Executing: cyc_SR3.py"
+# python cyc_SR3.py
+# echo "[Step 3] Completed."
+
+# ------------------------------------------------
+# Step 4: cyc_PSE.py
+# ------------------------------------------------
+# echo ""
+# echo "[Step 4] Executing: cyc_PSE.py"
+# python cyc_PSE.py
+# echo "[Step 4] Completed."
+
+# ------------------------------------------------
+# Step 5: cyc_WSINDy.py
+# ------------------------------------------------
+# echo ""
+# echo "[Step 5] Executing: cyc_WSINDy.py"
+# python cyc_WSINDy.py
+# echo "[Step 5] Completed."
+
+# ------------------------------------------------
+# Step 6: cyc_gEDMD.py
+# ------------------------------------------------
+# echo ""
+# echo "[Step 6] Executing: cyc_gEDMD.py"
+# python cyc_gEDMD.py
+# echo "[Step 6] Completed."
+
+# ------------------------------------------------
+# Step 7: cyc_EDMD.py
+# ------------------------------------------------
+# echo ""
+# echo "[Step 7] Executing: cyc_EDMD.py"
+# python cyc_EDMD.py
+# echo "[Step 7] Completed."
+
+# ------------------------------------------------
+# Step 8: cyc_batch_mse_acr.py
+# ------------------------------------------------
+# echo ""
+# echo "[Step 8] Executing: cyc_batch_mse_acr.py"
+# python cyc_batch_mse_acr.py
+# echo "[Step 8] Completed."
+
+# ------------------------------------------------
+# Step 9: plot_cyc_phase.py
+# ------------------------------------------------
+echo ""
+echo "[Step 9] Executing: plot_cyc_phase.py"
+python3.9 plot_cyc_phase.py
+echo "[Step 9] Completed."
+
+# ------------------------------------------------
+# Step 10: plot_cyc_nrmse.py
+# ------------------------------------------------
+echo ""
+echo "[Step 10] Executing: plot_cyc_nrmse.py"
+python3.9 plot_cyc_nrmse.py
+echo "[Step 10] Completed."
+
+# ------------------------------------------------
+# Step 11: plot_cyc_eigenfunction.py
+# ------------------------------------------------
+echo ""
+echo "[Step 11] Executing: plot_cyc_eigenfunction.py"
+python3.9 plot_cyc_eigenfunction.py
+echo "[Step 11] Completed."
+
+# ------------------------------------------------
+# Step 12: plot_cyc_ausc.py
+# ------------------------------------------------
+echo ""
+echo "[Step 12] Executing: plot_cyc_ausc.py"
+python3.9 plot_cyc_ausc.py
+echo "[Step 12] Completed."
+
+# ------------------------------------------------
+# Step 13: plot_cyc_mse_boxplot.py
+# ------------------------------------------------
+echo ""
+echo "[Step 13] Executing: plot_cyc_mse_boxplot.py"
+python3.9 plot_cyc_mse_boxplot.py
+echo "[Step 13] Completed."
+
+# ------------------------------------------------
+# Step 14: plot_cyc_acr_bar.py
+# ------------------------------------------------
+echo ""
+echo "[Step 14] Executing: plot_cyc_acr_bar.py"
+python3.9 plot_cyc_acr_bar.py
+echo "[Step 14] Completed."
+
+DATA_DIR="../data"
+RESULT_DIR="../results"
+
+# Define the DT values implicitly found from data suffix names
+DTS=("0.1" "0.1666" "0.2")
+
+for dt_val in "${DTS[@]}"; do
+    data_file="${DATA_DIR}/flag_traj_4_dt${dt_val}.npy"
+    if [ ! -f "$data_file" ]; then
+        echo "Data file not found: $data_file"
+        continue
+    fi
+    
+    echo ""
+    echo "[Step 15] Running identification methods for dt=$dt_val"
+    
+    echo "  -> Running flag_HANDI.py"
+    python3.9 flag_HANDI.py --data "$data_file" --dt $dt_val --devices 1 --no-tune
+done
+
+echo ""
+echo "[Step 16] Plotting Results"
+echo "  -> Running flag_plot_flag.py"
+for dt_val in "${DTS[@]}"; do
+    echo "    -> flag_plot_flag.py dt=${dt_val}"
+    python3.9 flag_plot_flag.py --dt ${dt_val} --traj-idx 0 --tmax 10 --dim 4 --handi-eq "${RESULT_DIR}/HANDI_flag_dt${dt_val}.txt" --pse-eq "${DATA_DIR}/PSE_flag_dt${dt_val}.txt" --sindy-eq "${DATA_DIR}/SINDy_flag_dt${dt_val}.txt" --sr3-eq "${DATA_DIR}/SR3_flag_dt${dt_val}.txt" --out-dir "${RESULT_DIR}" --plot-dims 2 --save-format pdf --no-legend --bounds-from HANDI --bounds-scale 3.0
+    
+done
+
+echo "  -> Running flag_plot_e.py (only dt=0.2)"
+python3.9 flag_plot_e.py --dt 0.2 --trajectory-index 1 --output-dir "${RESULT_DIR}"
+
+echo "  -> Running flag_ausc.py"
+python3.9 flag_ausc.py --data "${DATA_DIR}/flag_traj_4_dt0.2.npy" --result_dir "${RESULT_DIR}" --dt 0.2 --output "${RESULT_DIR}/figure6_flag_AUSC.pdf"
+
+echo "  -> Running flag_plot_results.py (only dt=0.2 for traj 5 & 6)"
+python3.9 flag_plot_results.py --dt 0.2
+
+echo ""
+echo "=========================================="
+echo "All files executed successfully!"
+echo "=========================================="
