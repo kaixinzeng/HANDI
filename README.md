@@ -27,8 +27,7 @@ All required Python libraries and their exact versions are specified in `require
 
 ## Installation guide
 The code has been tested with **Python 3.13** in an isolated conda environment.
-An NVIDIA GPU with CUDA support is required to run the demo. 
-CUDA drivers should be properly installed on the host system.
+An NVIDIA GPU with CUDA support is recommended to run the code.
 Typical installation time is approximately **5–10 minutes**, assuming a CUDA-capable NVIDIA driver is already installed.
 
 ```bash
@@ -37,7 +36,7 @@ git clone <REPO_URL>
 cd <repo-folder>
 
 # Create and activate conda environment
-conda create -n proj python=3.9 -y
+conda create -n proj python=3.13 -y
 conda activate proj
 
 # Install dependencies
@@ -62,7 +61,7 @@ python HANDI.py \
 
 After execution, the demo **outputs** include trained model weights (.pt), a record of optimal hyperparameters (.json), and the identified symbolic governing equations (.txt). Additional files store identified coefficients, error metrics, and diagnostic indicators for quantitative evaluation and verification.
 
-A representative demo illustrating the HANDI workflow is provided via Code Ocean. The Code Ocean capsule includes the necessary environment, data, and execution scripts to run the demo without additional setup. Users can execute the demo directly within the Code Ocean environment and inspect the resulting identified dynamics and visualizations. The expected runtime for the demo is approximately **3 minutes** on a standard GPU-enabled desktop environment.
+A representative demo illustrating the HANDI workflow is provided via Code Ocean. The Code Ocean capsule includes the necessary environment, data, and execution scripts to run the demo without additional setup. Users can execute the demo directly within the Code Ocean environment and inspect the resulting identified dynamics and visualizations. The expected runtime for the demo is approximately **3 minutes** on a standard environment.
 
 Code Ocean demo capsule:  
 https://codeocean.com/capsule/9813712/tree
