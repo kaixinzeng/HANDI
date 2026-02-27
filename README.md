@@ -26,7 +26,7 @@ The experiments were tested on the following system:
 All required Python libraries and their exact versions are specified in `requirements.txt`.
 
 ## Installation guide
-The code has been tested with **Python 3.9** in an isolated conda environment.
+The code has been tested with **Python 3.13** in an isolated conda environment.
 An NVIDIA GPU with CUDA support is required to run the demo. 
 CUDA drivers should be properly installed on the host system.
 Typical installation time is approximately **5–10 minutes**, assuming a CUDA-capable NVIDIA driver is already installed.
