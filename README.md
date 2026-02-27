@@ -61,7 +61,7 @@ python HANDI.py \
 
 After execution, the demo **outputs** include trained model weights (.pt), a record of optimal hyperparameters (.json), and the identified symbolic governing equations (.txt). Additional files store identified coefficients, error metrics, and diagnostic indicators for quantitative evaluation and verification.
 
-A representative demo illustrating the HANDI workflow is provided via Code Ocean. The Code Ocean capsule includes the necessary environment, data, and execution scripts to run the demo without additional setup. Users can execute the demo directly within the Code Ocean environment and inspect the resulting identified dynamics and visualizations. The expected runtime for the demo is approximately **3 minutes** on a standard environment.
+A representative demo illustrating the HANDI workflow is provided via Code Ocean. The Code Ocean capsule includes the necessary environment, minimal demo dataset, and execution scripts to run the demo without additional setup. Users can execute the demo directly within the Code Ocean environment and inspect the resulting identified dynamics and key visualizations. The expected runtime for the demo is approximately **3 minutes** on a standard environment.
 
 Code Ocean demo capsule:  
 https://codeocean.com/capsule/9813712/tree
