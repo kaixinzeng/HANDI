@@ -13,7 +13,7 @@ https://github.com/user-attachments/assets/c14a2bbe-9c53-4ecf-98cd-cb92b056a109
 
 
 ## System requirements
-The experiments were tested on the following system:
+The experiments were tested on the following configuration:
 - **Operating system**: Ubuntu 24.04
 - **Python**: 3.13  
 - **GPU**: NVIDIA RTX 4090
@@ -27,13 +27,14 @@ All required Python libraries and their exact versions are specified in `require
 
 ## Installation guide
 The code has been tested with **Python 3.13** in an isolated conda environment.
-An NVIDIA GPU with CUDA support is recommended to run the code.
+No non-standard hardware is strictly required to run the demo. 
+A CUDA-capable GPU is recommended for faster execution.
 Typical installation time is approximately **5–10 minutes**, assuming a CUDA-capable NVIDIA driver is already installed.
 
 ```bash
 # Clone the repository
 git clone https://github.com/kaixinzeng/HANDI.git
-cd <repo-folder>
+cd HANDI
 
 # Create and activate conda environment
 conda create -n proj python=3.13 -y
